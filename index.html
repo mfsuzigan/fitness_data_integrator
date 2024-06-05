@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Data Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f7f7;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            max-width: 600px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+
+        .subtitle {
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        .form-group input {
+            width: 60px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .btn-group {
+            text-align: center;
+        }
+
+        .btn {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: #fff;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .btn:hover {
+            background-color: #0056b3;
+        }
+
+        .notification {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #4caf50;
+            color: #fff;
+            padding: 15px 30px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+            z-index: 999;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Health Data Form</h2>
+        <div class="subtitle">Weight:</div>
+        <form id="healthForm">
+            <div class="form-group">
+                <input type="text" id="weight1" name="weight1" required maxlength="4">
+                <input type="text" id="weight2" name="weight2" required maxlength="4">
+                <input type="text" id="weight3" name="weight3" required maxlength="4">
+            </div>
+            <div class="subtitle">Fat%:</div>
+            <div class="form-group">
+                <input type="text" id="fat1" name="fat1" required maxlength="4">
+                <input type="text" id="fat2" name="fat2" required maxlength="4">
+                <input type="text" id="fat3" name="fat3" required maxlength="4">
+            </div>
+            <!-- Repeat the above form-group block for other pieces of data -->
+            <div class="btn-group">
+                <button type="reset" class="btn">Reset</button>
+                <button type="button" class="btn" onclick="sendFormData()">Send</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="notification" id="notification">Data Sent Successfully!</div>
+
+    <script>
+        function sendFormData() {
+            var form = document.getElementById("healthForm");
+            var formData = new FormData(form);
+            var jsonObject = {};
+
+            // Add weight data
+            var weightData = {};
+            for (let i = 1; i <= 3; i++) {
+                weightData["measure" + i] = parseInt(formData.get("weight" + i));
+            }
+            jsonObject["weight"] = weightData;
+
+            // Add fat% data
+            var fatData = {};
+            for (let i = 1; i <= 3; i++) {
+                fatData["measure" + i] = parseInt(formData.get("fat" + i));
+            }
+            jsonObject["fat%"] = fatData;
+
+            // Repeat the above block for other pieces of data
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "https://webhook.site/b3d8e491-12fc-46fc-9bde-1ce563146d68");
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            xhr.send(JSON.stringify(jsonObject));
+
+            showNotification();
+            clearForm();
+        }
+
+        function showNotification() {
+            var notification = document.getElementById("notification");
+            notification.style.display = "block";
+            setTimeout(function() {
+                notification.style.display = "none";
+            }, 3000); // Hide the notification after 3 seconds
+        }
+
+        function clearForm() {
+            var form = document.getElementById("healthForm");
+            form.reset();
+        }
+    </script>
+</body>
+</html>
+
