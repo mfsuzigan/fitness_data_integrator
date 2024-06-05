@@ -124,12 +124,12 @@
             }
             jsonObject["weight"] = weightData;
 
-            // Add fat% data
-            var fatData = {};
-            for (let i = 1; i <= 3; i++) {
-                fatData["measure" + i] = parseInt(formData.get("fat" + i));
-            }
-            jsonObject["fat%"] = fatData;
+        // Add fat% data
+        var fatData = {};
+        for (let i = 1; i <= 3; i++) {
+            fatData["measure" + i] = parseInt(formData.get("fat" + i));
+        }
+        jsonObject["fat%"] = fatData;
 
             // Repeat the above block for other pieces of data
 
@@ -138,23 +138,23 @@
             xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.send(JSON.stringify(jsonObject));
 
-            showNotification();
-            clearForm();
-        }
+        showNotification();
+        clearForm();
+    }
 
-        function showNotification() {
-            var notification = document.getElementById("notification");
-            notification.style.display = "block";
-            setTimeout(function() {
-                notification.style.display = "none";
-            }, 3000); // Hide the notification after 3 seconds
-        }
+    function showNotification() {
+        var notification = document.getElementById("notification");
+        notification.style.display = "block";
+        setTimeout(function() {
+            notification.style.display = "none";
+        }, 3000); // Hide the notification after 3 seconds
+    }
 
-        function clearForm() {
-            var form = document.getElementById("healthForm");
-            form.reset();
-        }
-    </script>
+    function clearForm() {
+        var form = document.getElementById("healthForm");
+        form.reset();
+    }
+</script>
 </body>
 </html>
 
