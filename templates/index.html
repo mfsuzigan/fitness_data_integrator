@@ -86,72 +86,112 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <h2>Health Data Form</h2>
-        <form id="healthForm">
-            <div class="subtitle">Weight:</div>
-            <div class="form-group" aria-label="Weight:">
-                <input type="text" id="weight1" name="weight1" required maxlength="4">
-                <input type="text" id="weight2" name="weight2" required maxlength="4">
-                <input type="text" id="weight3" name="weight3" required maxlength="4">
-            </div>
-            <div class="subtitle">Fat%:</div>
-            <div class="form-group" aria-label="Fat%:">
-                <input type="text" id="fat_perc1" name="fat_perc1" required maxlength="4">
-                <input type="text" id="fat_perc2" name="fat_perc2" required maxlength="4">
-                <input type="text" id="fat_perc3" name="fat_perc3" required maxlength="4">
-            </div>
-            <!-- Repeat the above form-group block for other pieces of data -->
-            <div class="btn-group">
-                <button type="reset" class="btn">Reset</button>
-                <button type="button" class="btn" onclick="sendFormData()">Send</button>
-            </div>
-        </form>
-    </div>
+<div class="container">
+    <h2>Health Data Form</h2>
+    <form id="healthForm">
+        <div class="subtitle">Weight:</div>
+        <div class="form-group" aria-label="Weight:">
+            <input type="text" id="weight1" name="weight1" required maxlength="4">
+            <input type="text" id="weight2" name="weight2" required maxlength="4">
+            <input type="text" id="weight3" name="weight3" required maxlength="4">
+        </div>
+        <div class="subtitle">Fat%:</div>
+        <div class="form-group" aria-label="Fat%:">
+            <input type="text" id="fat_perc1" name="fat_perc1" required maxlength="4">
+            <input type="text" id="fat_perc2" name="fat_perc2" required maxlength="4">
+            <input type="text" id="fat_perc3" name="fat_perc3" required maxlength="4">
+        </div>
+        <div class="subtitle">Muscle%:</div>
+        <div class="form-group" aria-label="Muscle%:">
+            <input type="text" id="musc_perc1" name="musc_perc1" required maxlength="4">
+            <input type="text" id="musc_perc2" name="musc_perc2" required maxlength="4">
+            <input type="text" id="musc_perc3" name="musc_perc3" required maxlength="4">
+        </div>
+        <div class="subtitle">Body Age:</div>
+        <div class="form-group" aria-label="Body Age:">
+            <input type="text" id="body_age1" name="body_age1" required maxlength="4">
+            <input type="text" id="body_age2" name="body_age2" required maxlength="4">
+            <input type="text" id="body_age3" name="body_age3" required maxlength="4">
+        </div>
+        <div class="subtitle">Visceral Fat%:</div>
+        <div class="form-group" aria-label="Visceral Fat%:">
+            <input type="text" id="vfat_perc1" name="vfat_perc1" required maxlength="4">
+            <input type="text" id="vfat_perc2" name="vfat_perc2" required maxlength="4">
+            <input type="text" id="vfat_perc3" name="vfat_perc3" required maxlength="4">
+        </div>
+        <div class="subtitle">Waist:</div>
+        <div class="form-group" aria-label="Waist%:">
+            <input type="text" id="waist1" name="waist1" required maxlength="4">
+            <input type="text" id="waist2" name="waist2" required maxlength="4">
+            <input type="text" id="waist3" name="waist3" required maxlength="4">
+        </div>
+        <div class="subtitle">Systolic BP:</div>
+        <div class="form-group" aria-label="Systolic BP:">
+            <input type="text" id="systolic_bp1" name="systolic_bp1" required maxlength="4">
+            <input type="text" id="systolic_bp2" name="systolic_bp2" required maxlength="4">
+            <input type="text" id="systolic_bp3" name="systolic_bp3" required maxlength="4">
+        </div>
+        <div class="subtitle">Diastolic BP:</div>
+        <div class="form-group" aria-label="Diastolic BP:">
+            <input type="text" id="diastolic_bp1" name="diastolic_bp1" required maxlength="4">
+            <input type="text" id="diastolic_bp2" name="diastolic_bp2" required maxlength="4">
+            <input type="text" id="diastolic_bp3" name="diastolic_bp3" required maxlength="4">
+        </div>
+        <div class="subtitle">Heart rate:</div>
+        <div class="form-group" aria-label="Heart rate:">
+            <input type="text" id="heart_rate1" name="heart_rate1" required maxlength="4">
+            <input type="text" id="heart_rate2" name="heart_rate2" required maxlength="4">
+            <input type="text" id="heart_rate3" name="heart_rate3" required maxlength="4">
+        </div>
+        <div class="btn-group">
+            <button type="reset" class="btn">Reset</button>
+            <button type="button" class="btn" onclick="sendFormData()">Send</button>
+        </div>
+    </form>
+</div>
 
-    <div class="notification" id="notification">Data Sent Successfully!</div>
+<div class="notification" id="notification">Data Sent Successfully!</div>
 
-    <script>
-        function sendFormData() {
-            var form = document.getElementById("healthForm");
-            var formData = new FormData(form);
-            var jsonObject = {};
+<script>
+    function sendFormData() {
+        var form = document.getElementById("healthForm");
+        var formData = new FormData(form);
+        var jsonObject = {};
 
-            fields = ["weight", "fat_perc"];
-            data = [];
+        fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "waist", "systolic_bp", "diastolic_bp", "heart_rate"];
+        data = [];
 
-            for (field of fields){
+        for (field of fields){
 
-                for (let i = 1; i <= 3; i++) {
-                    data.push(parseInt(formData.get(field + i)));
-                }
-
-                jsonObject[field] = data
-
-                data = []
+            for (let i = 1; i <= 3; i++) {
+                data.push(parseInt(formData.get(field + i)));
             }
 
-            var xhr = new XMLHttpRequest();
-            xhr.open("POST", "http://192.168.100.2:8888/measures");
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
-            xhr.send(JSON.stringify(jsonObject));
+            jsonObject[field] = data
 
-            showNotification();
-            clearForm();
+            data = []
         }
 
-        function showNotification() {
-            var notification = document.getElementById("notification");
-            notification.style.display = "block";
-            setTimeout(function() {
-                notification.style.display = "none";
-            }, 3000); // Hide the notification after 3 seconds
-        }
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", "/measures");
+        xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+        xhr.send(JSON.stringify(jsonObject));
 
-        function clearForm() {
-            var form = document.getElementById("healthForm");
-            form.reset();
-        }
+        showNotification();
+    }
+
+    function showNotification() {
+        var notification = document.getElementById("notification");
+        notification.style.display = "block";
+        setTimeout(function() {
+            notification.style.display = "none";
+        }, 3000); // Hide the notification after 3 seconds
+    }
+
+    function clearForm() {
+        var form = document.getElementById("healthForm");
+        form.reset();
+    }
 </script>
 </body>
 </html>
