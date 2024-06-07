@@ -157,23 +157,23 @@
         var form = document.getElementById("healthForm");
         var formData = new FormData(form);
         var jsonObject = {};
+        jsonObject["created_at"] = getDate();
+        jsonObject["created_at_formatted"] = getFormattedDate();
 
         fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "waist", "systolic_bp", "diastolic_bp", "heart_rate"];
-        data = [];
 
         for (field of fields){
+            data = [];
 
             for (let i = 1; i <= 3; i++) {
                 data.push(parseInt(formData.get(field + i)));
             }
 
             jsonObject[field] = data
-
-            data = []
         }
 
         var xhr = new XMLHttpRequest();
-        xhr.open("POST", "/measures");
+        xhr.open("POST", "/measurement");
         xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
         xhr.send(JSON.stringify(jsonObject));
 
@@ -191,6 +191,16 @@
     function clearForm() {
         var form = document.getElementById("healthForm");
         form.reset();
+    }
+
+    function getDate() {
+        let now = new Date(); // depends if you have milliseconds, or seconds, then the * 1000 might be not, or required.
+        now = new Date(now.getTime() - (now.getTimezoneOffset() * 60 * 1000));
+        return now.toISOString().split("Z")[0];
+    }
+
+    function getFormattedDate(){
+        return new Date().toLocaleString("pt-Br").split(",")[0]
     }
 </script>
 </body>

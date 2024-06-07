@@ -11,24 +11,28 @@ def index():
     return render_template("index.html")
 
 
-@app.route('/measures', methods=['POST'])
-def measures():
-    measures_data = request.get_json()
-    app.logger.info(measures_data)
+@app.route('/measurement', methods=['POST'])
+def save_measurement():
+    raw_data = request.get_json()
+    app.logger.info(raw_data)
+    send_to_spreadsheet(build_record(raw_data))
 
-    weight_measures = measures_data.get('weight')
-    fat_measures = measures_data.get('fat_perc')
-
-    send_data_to_spreadsheet(weight_measures)
-
-    return jsonify({'message': 'Measures received successfully'}), 200
+    return jsonify({'message': 'Measures received successfully'})
 
 
-def send_data_to_spreadsheet(weight_measures):
+def build_record(data):
+    record = [data["created_at_formatted"]]
+    record.extend(["", "", "", "", "", "", "", "", ""])
+    record.append(f"=average{tuple(data['weight'])}")
+    record.extend(["", "", ""])
+    record.append(f"=average{tuple(data['fat_perc'])}")
+    return record
+
+
+def send_to_spreadsheet(record):
     gc = gspread.service_account(filename="resources/creds.json")
     sheet = gc.open_by_key(SPREADSHEET_ID).sheet1
-    row = [f"=average{tuple(weight_measures)}", "test", "test", "test"]
-    sheet.append_row(row, value_input_option=ValueInputOption.user_entered)
+    sheet.append_row(record, value_input_option=ValueInputOption.user_entered)
 
 
 if __name__ == "__main__":
