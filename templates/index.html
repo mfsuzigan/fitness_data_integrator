@@ -185,7 +185,7 @@
         notification.style.display = "block";
         setTimeout(function() {
             notification.style.display = "none";
-        }, 3000); // Hide the notification after 3 seconds
+        }, 3000);
     }
 
     function clearForm() {
@@ -194,7 +194,7 @@
     }
 
     function getDate() {
-        let now = new Date(); // depends if you have milliseconds, or seconds, then the * 1000 might be not, or required.
+        let now = new Date();
         now = new Date(now.getTime() - (now.getTimezoneOffset() * 60 * 1000));
         return now.toISOString().split("Z")[0];
     }
