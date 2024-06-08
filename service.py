@@ -1,4 +1,5 @@
 import gspread
+import gspread_formatting
 from gspread.utils import ValueInputOption
 
 SPREADSHEET_ID = "1ETe9O2qX36aRx6243qzYNMNChQKZmxvWdRMt7htPLaM"
@@ -20,18 +21,23 @@ def build_record(data):
 
 
 def duplicate_worksheet_last_row(worksheet):
-    row_count = len(worksheet.col_values(1))
-    last_row = worksheet.row_values(row_count)
-    next_row = row_count + 1
-    worksheet.update([last_row], f"{next_row}:{next_row}")
+    last_row_number = len(worksheet.col_values(1))
+    last_row_values = worksheet.row_values(last_row_number)
 
-    # for col in range(1, len(last_row)):
-    #     cell_formats.append(spreadsheet.get_formatted_value(7, col))
-    #
-    # spreadsheet.update_row(8, last_row)
-    #
-    # for i, cell_format in enumerate(cell_formats):
-    #     spreadsheet.format(f"B{8 + 1}", cell_format)
+    next_row_number = last_row_number + 1
+    worksheet.update([last_row_values], f"{next_row_number}:{next_row_number}",
+                     value_input_option=ValueInputOption.user_entered)
+
+    column_count = len(worksheet.row_values(1))
+
+    for column_number in range(1, column_count):
+        column_name = chr(ord('@') + column_number)
+        cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{column_name}{last_row_number}")
+        gspread_formatting.format_cell_range(worksheet, f"{column_name}{next_row_number}", cell_format)
+
+    # TODO:
+    # 1. column names for: "AA", "AB" etc
+    # 2. preserve formulas at copying
 
 
 def get_worksheet():
