@@ -8,7 +8,10 @@ SPREADSHEET_ID = "1ETe9O2qX36aRx6243qzYNMNChQKZmxvWdRMt7htPLaM"
 def save_data(raw_data):
     record = build_record(raw_data)
     worksheet = get_worksheet()
-    duplicate_worksheet_last_row(worksheet)
+
+    last_row_number = len(worksheet.col_values(1))
+    copy_last_row_values(worksheet, last_row_number)
+    copy_last_row_formatting(worksheet, last_row_number)
 
 
 def build_record(data):
@@ -20,20 +23,20 @@ def build_record(data):
     return record
 
 
-def duplicate_worksheet_last_row(worksheet):
-    last_row_number = len(worksheet.col_values(1))
+def copy_last_row_values(worksheet, last_row_number):
     last_row_values = worksheet.row_values(last_row_number)
-
     next_row_number = last_row_number + 1
     worksheet.update([last_row_values], f"{next_row_number}:{next_row_number}",
                      value_input_option=ValueInputOption.user_entered)
 
+
+def copy_last_row_formatting(worksheet, last_row_number):
     column_count = len(worksheet.row_values(1))
 
     for column_number in range(1, column_count):
         column_name = chr(ord('@') + column_number)
         cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{column_name}{last_row_number}")
-        gspread_formatting.format_cell_range(worksheet, f"{column_name}{next_row_number}", cell_format)
+        gspread_formatting.format_cell_range(worksheet, f"{column_name}{last_row_number + 1}", cell_format)
 
     # TODO:
     # 1. column names for: "AA", "AB" etc
