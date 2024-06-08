@@ -20,8 +20,10 @@ def build_record(data):
 
 
 def duplicate_worksheet_last_row(worksheet):
-    last_row = worksheet.row_values(7)
-    worksheet.update([last_row], "8:8")
+    row_count = len(worksheet.col_values(1))
+    last_row = worksheet.row_values(row_count)
+    next_row = row_count + 1
+    worksheet.update([last_row], f"{next_row}:{next_row}")
 
     # for col in range(1, len(last_row)):
     #     cell_formats.append(spreadsheet.get_formatted_value(7, col))
