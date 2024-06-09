@@ -120,10 +120,8 @@
             <input type="text" id="vfat_perc3" name="vfat_perc3" required maxlength="4">
         </div>
         <div class="subtitle">Waist:</div>
-        <div class="form-group" aria-label="Waist%:">
-            <input type="text" id="waist1" name="waist1" required maxlength="4">
-            <input type="text" id="waist2" name="waist2" required maxlength="4">
-            <input type="text" id="waist3" name="waist3" required maxlength="4">
+        <div class="form-group" aria-label="Waist:">
+            <input type="text" id="waist" name="waist" required maxlength="4">
         </div>
         <div class="subtitle">Systolic BP:</div>
         <div class="form-group" aria-label="Systolic BP:">
@@ -157,8 +155,8 @@
         var form = document.getElementById("healthForm");
         var formData = new FormData(form);
         var jsonObject = {};
-        jsonObject["created_at"] = getDate();
-        jsonObject["created_at_formatted"] = getFormattedDate();
+        jsonObject["created_at"] = getTimestamp();
+        jsonObject["date"] = getFormattedDate();
 
         fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "waist", "systolic_bp", "diastolic_bp", "heart_rate"];
 
@@ -193,7 +191,7 @@
         form.reset();
     }
 
-    function getDate() {
+    function getTimestamp() {
         let now = new Date();
         now = new Date(now.getTime() - (now.getTimezoneOffset() * 60 * 1000));
         return now.toISOString().split("Z")[0];
