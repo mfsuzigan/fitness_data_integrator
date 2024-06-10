@@ -81,6 +81,7 @@ def build_new_row(input_data, last_row_number, last_row_values):
         else:
             cell_value = ""
 
+        cell_value = cell_value.replace(".", ",")
         new_row_values.append(cell_value)
 
     return new_row_values
