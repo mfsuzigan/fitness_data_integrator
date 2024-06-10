@@ -157,6 +157,7 @@
         var jsonObject = {};
         jsonObject["created_at"] = getTimestamp();
         jsonObject["date"] = getFormattedDate();
+        jsonObject["waist"] = formData.get("waist")
 
         fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "systolic_bp", "diastolic_bp", "heart_rate"];
 
