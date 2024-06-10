@@ -16,7 +16,7 @@ def save_measurement():
     app.logger.info(raw_data)
     save_data(raw_data)
 
-    return jsonify({'message': 'Measures received successfully'})
+    return jsonify({'message': 'Measurements received successfully'})
 
 
 if __name__ == "__main__":
