@@ -5,34 +5,39 @@ from gspread.utils import ValueInputOption
 SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
 
 formula_by_column_name = {
-    "B": "=DATEDIF(\"1987-11-17\";A%ROW%;\"y\")",
-    "F": "=C%ROW%-E%ROW%",
-    "G": "=F%ROW%/E%ROW%",
-    "K": "=AVERAGE%VALUE_TUPLE%",
-    "L": "=(K%ROW%-K%PREVIOUS_ROW%)*100",
-    "M": "=(K%ROW%/K%PREVIOUS_ROW%)-1",
-    "N": "=K%ROW%/POWER(1,67;2)",
-    "O": "=AVERAGE%VALUE_TUPLE%",
-    "P": "=AVERAGE%VALUE_TUPLE%",
-    "Q": "=AVERAGE%VALUE_TUPLE%",
-    "R": "=AVERAGE%VALUE_TUPLE%",
-    "U": "=(T%ROW%/T%ROW%)-1",
-    "V": "=K%ROW%-T%ROW%",
-    "W": "=(V%ROW%/V%PREVIOUS_ROW%)-1",
-    "X": "=T%ROW%/(1,67^2)",
-    "Y": "=X%ROW%/S%ROW%",
+    "A": "%SINGLE_VALUE%",
+    "B": "=DATEDIF(\"1987-11-17\";A%ROW_NUM%;\"y\")",
+    "F": "=C%ROW_NUM%-E%ROW_NUM%",
+    "G": "=F%ROW_NUM%/E%ROW_NUM%",
+    "K": "=AVERAGE%TUPLE%",
+    "L": "=(K%ROW_NUM%-K%PREVIOUS_ROW_NUM%)*100",
+    "M": "=(K%ROW_NUM%/K%PREVIOUS_ROW_NUM%)-1",
+    "N": "=K%ROW_NUM%/POWER(1,67;2)",
+    "O": "=AVERAGE%TUPLE%",
+    "P": "=AVERAGE%TUPLE%",
+    "Q": "=AVERAGE%TUPLE%",
+    "R": "=AVERAGE%TUPLE%",
+    "S": "%SINGLE_VALUE%",
+    "T": "=K128-(K%ROW_NUM%*O%ROW_NUM%/100)",
+    "U": "=(T%ROW_NUM%/T%PREVIOUS_ROW_NUM%)-1",
+    "V": "=K%ROW_NUM%-T%ROW_NUM%",
+    "W": "=(V%ROW_NUM%/V%PREVIOUS_ROW_NUM%)-1",
+    "X": "=T%ROW_NUM%/(1,67^2)",
+    "Y": "=X%ROW_NUM%/S%ROW_NUM%",
     "Z": "=(U42-W42)*100",
-    "AA": "=AVERAGE%VALUE_TUPLE%",
-    "AB": "=AVERAGE%VALUE_TUPLE%",
-    "AC": "=AVERAGE%VALUE_TUPLE%",
+    "AA": "=AVERAGE%TUPLE%",
+    "AB": "=AVERAGE%TUPLE%",
+    "AC": "=AVERAGE%TUPLE%",
 }
 
 property_by_column_name = {
+    "A": "date",
     "K": "weight",
     "O": "fat_perc",
     "P": "musc_perc",
     "Q": "vfat_perc",
     "R": "body_age",
+    "S": "waist",
     "AA": "systolic_bp",
     "AB": "diastolic_bp",
     "AC": "heart_rate"
@@ -59,17 +64,20 @@ def build_new_row(input_data, last_row_number, last_row_values):
     for index, old_value in enumerate(last_row_values):
         column_name = get_column_name_by_index(index + 1)
 
-        if index == 0:
-            cell_value = input_data["date"]
-
-        elif column_name in formula_by_column_name:
+        if column_name in formula_by_column_name:
             cell_value = (formula_by_column_name[column_name]
-                          .replace("%PREVIOUS_ROW%", f"{last_row_number}")
-                          .replace("%ROW%", f"{new_row_number}"))
+                          .replace("%PREVIOUS_ROW_NUM%", f"{last_row_number}")
+                          .replace("%ROW_NUM%", f"{new_row_number}"))
 
             if column_name in property_by_column_name:
-                _tuple = str(tuple(input_data[property_by_column_name[column_name]])).replace(",", ";")
-                cell_value = cell_value.replace("%VALUE_TUPLE%", f"{_tuple}")
+                _property_name = property_by_column_name[column_name]
+
+                if formula_by_column_name[column_name] == "%SINGLE_VALUE%":
+                    cell_value = cell_value.replace("%SINGLE_VALUE%", input_data[_property_name])
+
+                else:
+                    _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
+                    cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
         else:
             cell_value = ""
 
