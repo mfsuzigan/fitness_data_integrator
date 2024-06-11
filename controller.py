@@ -1,6 +1,8 @@
+import json
+
 from flask import Flask, request, jsonify, render_template
 
-from service import save_data
+from service import save_to_spreadsheet, save_to_file
 
 app = Flask(__name__)
 
@@ -12,9 +14,10 @@ def index():
 
 @app.route('/measurement', methods=['POST'])
 def save_measurement():
-    raw_data = request.get_json()
-    app.logger.info(raw_data)
-    save_data(raw_data)
+    input_data = request.get_json()
+    app.logger.info(input_data)
+    save_to_file(json.dumps(input_data))
+    save_to_spreadsheet(input_data)
 
     return jsonify({'message': 'Measurements received successfully'})
 

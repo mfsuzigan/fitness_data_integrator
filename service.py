@@ -44,10 +44,15 @@ property_by_column_name = {
 }
 
 
-def save_data(input_data):
+def save_to_file(request):
+    with open("requests.log", "a") as file_log:
+        file_log.writelines(f"\n{request}")
+
+
+def save_to_spreadsheet(input_data):
     worksheet = get_worksheet()
     last_row_number = len(worksheet.col_values(1))
-    copy_last_row_formatting(worksheet, last_row_number)
+    # copy_last_row_formatting(worksheet, last_row_number)
 
     last_row_values = worksheet.row_values(last_row_number)
     new_row_number = last_row_number + 1
