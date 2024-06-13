@@ -1,29 +1,30 @@
 import gspread
 import gspread_formatting
+import pickle
 from gspread.utils import ValueInputOption
 
 SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
 
 formula_by_column_name = {
     "A": "%SINGLE_VALUE%",
-    "B": "=DATEDIF(\"1987-11-17\";A%ROW_NUM%;\"y\")",
-    "F": "=C%ROW_NUM%-E%ROW_NUM%",
-    "G": "=F%ROW_NUM%/E%ROW_NUM%",
+    "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
+    "F": "=C%N%-E%N%",
+    "G": "=F%N%/E%N%",
     "K": "=AVERAGE%TUPLE%",
-    "L": "=(K%ROW_NUM%-K%PREVIOUS_ROW_NUM%)*100",
-    "M": "=(K%ROW_NUM%/K%PREVIOUS_ROW_NUM%)-1",
-    "N": "=K%ROW_NUM%/POWER(1,67;2)",
+    "L": "=(K%N%-K%PREVIOUS_ROW_NUM%)*100",
+    "M": "=(K%N%/K%PREVIOUS_ROW_NUM%)-1",
+    "N": "=K%N%/POWER(1,67;2)",
     "O": "=AVERAGE%TUPLE%",
     "P": "=AVERAGE%TUPLE%",
     "Q": "=AVERAGE%TUPLE%",
     "R": "=AVERAGE%TUPLE%",
     "S": "%SINGLE_VALUE%",
-    "T": "=K128-(K%ROW_NUM%*O%ROW_NUM%/100)",
-    "U": "=(T%ROW_NUM%/T%PREVIOUS_ROW_NUM%)-1",
-    "V": "=K%ROW_NUM%-T%ROW_NUM%",
-    "W": "=(V%ROW_NUM%/V%PREVIOUS_ROW_NUM%)-1",
-    "X": "=T%ROW_NUM%/(1,67^2)",
-    "Y": "=X%ROW_NUM%/S%ROW_NUM%",
+    "T": "=K128-(K%N%*O%N%/100)",
+    "U": "=(T%N%/T%PREVIOUS_ROW_NUM%)-1",
+    "V": "=K%N%-T%N%",
+    "W": "=(V%N%/V%PREVIOUS_ROW_NUM%)-1",
+    "X": "=T%N%/(1,67^2)",
+    "Y": "=X%N%/S%N%",
     "Z": "=(U42-W42)*100",
     "AA": "=AVERAGE%TUPLE%",
     "AB": "=AVERAGE%TUPLE%",
@@ -43,6 +44,21 @@ property_by_column_name = {
     "AC": "heart_rate"
 }
 
+cell_formats_by_range = {
+    "A:A": "date_normal_gray",
+    "K:X": "decimal2_normal_white",
+    "Q:S": "decimal1_normal_white",
+    "AA:AG": "integer_normal_white",
+    "B:J": "integer_bold_gray",
+    "D:D": "decimal1_bold_gray",
+    "G:G": "signaledpercentage2_bold_gray",
+    "L:L": "signaledinteger_normal_white",
+    "M:M": "signaledpercentage2_normal_white",
+    "U:U": "signaledpercentage2_normal_white",
+    "W:W": "signaledpercentage2_normal_white",
+    "Y:Y": "decimal3_normal_white",
+    "Z:Z": "signaleddecimal2_normal_white"
+}
 
 def save_to_file(request):
     with open("requests.log", "a") as file_log:
@@ -52,7 +68,7 @@ def save_to_file(request):
 def save_to_spreadsheet(input_data):
     worksheet = get_worksheet()
     last_row_number = len(worksheet.col_values(1))
-    # copy_last_row_formatting(worksheet, last_row_number)
+    copy_last_row_formatting(worksheet, last_row_number)
 
     last_row_values = worksheet.row_values(last_row_number)
     new_row_number = last_row_number + 1
@@ -60,6 +76,16 @@ def save_to_spreadsheet(input_data):
     worksheet.update([build_new_row(input_data, last_row_number, last_row_values)],
                      f"{new_row_number}:{new_row_number}",
                      value_input_option=ValueInputOption.user_entered)
+
+
+def save_cell_format_to_disk(cell_format, name):
+    with open(f"/cell_formats/{name}.format", "wb") as file:
+        pickle.dump(cell_format, file)
+
+
+def load_cell_format_from_disk(name):
+    with open(f"/cell_formats/{name}.format", "rb") as file:
+        return pickle.load(file)
 
 
 def build_new_row(input_data, last_row_number, last_row_values):
@@ -72,7 +98,7 @@ def build_new_row(input_data, last_row_number, last_row_values):
         if column_name in formula_by_column_name:
             cell_value = (formula_by_column_name[column_name]
                           .replace("%PREVIOUS_ROW_NUM%", f"{last_row_number}")
-                          .replace("%ROW_NUM%", f"{new_row_number}"))
+                          .replace("%N%", f"{new_row_number}"))
 
             if column_name in property_by_column_name:
                 _property_name = property_by_column_name[column_name]
