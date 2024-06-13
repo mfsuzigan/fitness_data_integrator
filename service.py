@@ -1,3 +1,5 @@
+import os.path
+
 import gspread
 import gspread_formatting
 import pickle
@@ -60,6 +62,7 @@ cell_formats_by_range = {
     "Z:Z": "signaleddecimal2_normal_white"
 }
 
+
 def save_to_file(request):
     with open("requests.log", "a") as file_log:
         file_log.writelines(f"\n{request}")
@@ -67,24 +70,33 @@ def save_to_file(request):
 
 def save_to_spreadsheet(input_data):
     worksheet = get_worksheet()
-    last_row_number = len(worksheet.col_values(1))
-    copy_last_row_formatting(worksheet, last_row_number)
+    save_row_format_to_disk(worksheet)
+    # last_row_number = len(worksheet.col_values(1))
+    # copy_last_row_formatting(worksheet, last_row_number)
+    #
+    # last_row_values = worksheet.row_values(last_row_number)
+    # new_row_number = last_row_number + 1
+    #
+    # worksheet.update([build_new_row(input_data, last_row_number, last_row_values)],
+    #                  f"{new_row_number}:{new_row_number}",
+    #                  value_input_option=ValueInputOption.user_entered)
 
-    last_row_values = worksheet.row_values(last_row_number)
-    new_row_number = last_row_number + 1
 
-    worksheet.update([build_new_row(input_data, last_row_number, last_row_values)],
-                     f"{new_row_number}:{new_row_number}",
-                     value_input_option=ValueInputOption.user_entered)
+def save_row_format_to_disk(worksheet):
+    for _range in cell_formats_by_range:
+        if not os.path.exists(f"cell_formats/{cell_formats_by_range[_range]}"):
+            cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{_range.split(':')[0]}127")
+            save_cell_format_to_disk(cell_format, cell_formats_by_range[_range])
 
 
 def save_cell_format_to_disk(cell_format, name):
-    with open(f"/cell_formats/{name}.format", "wb") as file:
+    os.makedirs("cell_formats", exist_ok=True)
+    with open(f"cell_formats/{name}.format", "wb") as file:
         pickle.dump(cell_format, file)
 
 
 def load_cell_format_from_disk(name):
-    with open(f"/cell_formats/{name}.format", "rb") as file:
+    with open(f"cell_formats/{name}.format", "rb") as file:
         return pickle.load(file)
 
 
