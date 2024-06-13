@@ -6,6 +6,7 @@ import pickle
 from gspread.utils import ValueInputOption
 
 SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
+COLUMN_COUNT = 33
 
 formula_by_column_name = {
     "A": "%SINGLE_VALUE%",
@@ -27,7 +28,7 @@ formula_by_column_name = {
     "W": "=(V%N%/V%PREVIOUS_ROW_NUM%)-1",
     "X": "=T%N%/(1,67^2)",
     "Y": "=X%N%/S%N%",
-    "Z": "=(U42-W42)*100",
+    "Z": "=(U%N%-W%N%)*100",
     "AA": "=AVERAGE%TUPLE%",
     "AB": "=AVERAGE%TUPLE%",
     "AC": "=AVERAGE%TUPLE%",
@@ -52,8 +53,9 @@ cell_formats_by_range = {
     "Q:S": "decimal1_normal_white",
     "AA:AG": "integer_normal_white",
     "B:J": "integer_bold_gray",
+    "F:F": "integer_bold_grayer",
     "D:D": "decimal1_bold_gray",
-    "G:G": "signaledpercentage2_bold_gray",
+    "G:G": "signaledpercentage2_bold_grayer",
     "L:L": "signaledinteger_normal_white",
     "M:M": "signaledpercentage2_normal_white",
     "U:U": "signaledpercentage2_normal_white",
@@ -70,16 +72,16 @@ def save_to_file(request):
 
 def save_to_spreadsheet(input_data):
     worksheet = get_worksheet()
-    save_row_format_to_disk(worksheet)
-    # last_row_number = len(worksheet.col_values(1))
-    # copy_last_row_formatting(worksheet, last_row_number)
-    #
-    # last_row_values = worksheet.row_values(last_row_number)
-    # new_row_number = last_row_number + 1
-    #
-    # worksheet.update([build_new_row(input_data, last_row_number, last_row_values)],
-    #                  f"{new_row_number}:{new_row_number}",
-    #                  value_input_option=ValueInputOption.user_entered)
+    # save_row_format_to_disk(worksheet)
+
+    last_row_number = len(worksheet.col_values(1))
+    new_row_number = last_row_number + 1
+
+    apply_row_formatting(worksheet, new_row_number)
+
+    new_row_values = build_new_row(input_data, last_row_number, COLUMN_COUNT)
+    worksheet.update([new_row_values], f"{new_row_number}:{new_row_number}",
+                     value_input_option=ValueInputOption.user_entered)
 
 
 def save_row_format_to_disk(worksheet):
@@ -100,12 +102,12 @@ def load_cell_format_from_disk(name):
         return pickle.load(file)
 
 
-def build_new_row(input_data, last_row_number, last_row_values):
+def build_new_row(input_data, last_row_number, column_count):
     new_row_number = last_row_number + 1
     new_row_values = []
 
-    for index, old_value in enumerate(last_row_values):
-        column_name = get_column_name_by_index(index + 1)
+    for column_index in range(1, column_count):
+        column_name = get_column_name_by_index(column_index)
 
         if column_name in formula_by_column_name:
             cell_value = (formula_by_column_name[column_name]
@@ -130,13 +132,12 @@ def build_new_row(input_data, last_row_number, last_row_values):
     return new_row_values
 
 
-def copy_last_row_formatting(worksheet, last_row_number):
-    column_count = len(worksheet.row_values(1))
-
-    for column_number in range(1, column_count + 1):
-        column_name = get_column_name_by_index(column_number)
-        cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{column_name}{last_row_number}")
-        gspread_formatting.format_cell_range(worksheet, f"{column_name}{last_row_number + 1}", cell_format)
+def apply_row_formatting(worksheet, new_row_number):
+    for original_range in cell_formats_by_range:
+        applicable_cell_format = load_cell_format_from_disk(cell_formats_by_range[original_range])
+        range_parts = original_range.split(":")
+        applied_range = f"{range_parts[0]}{new_row_number}:{range_parts[1]}{new_row_number}"
+        gspread_formatting.format_cell_range(worksheet, applied_range, applicable_cell_format)
 
 
 def get_column_name_by_index(index):
