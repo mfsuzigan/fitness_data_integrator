@@ -83,12 +83,25 @@
             z-index: 999;
             display: none;
         }
+
+        .section-title {
+            font-size: 1.2em;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            text-align: left;
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Health Data Form</h2>
     <form id="healthForm">
+        <div class="subtitle">Date:</div>
+        <div class="form-group" aria-label="Date:">
+            <input type="date" id="date" name="date" required>
+        </div>
         <div class="subtitle">Weight:</div>
         <div class="form-group" aria-label="Weight:">
             <input type="text" id="weight1" name="weight1" required maxlength="4">
@@ -141,6 +154,21 @@
             <input type="text" id="heart_rate2" name="heart_rate2" required maxlength="4">
             <input type="text" id="heart_rate3" name="heart_rate3" required maxlength="4">
         </div>
+
+        <div class="section-title">Workout Sessions:</div>
+        <div class="subtitle">Strength:</div>
+        <div class="form-group" aria-label="Strength:">
+            <input type="text" id="strength" name="strength" required maxlength="4">
+        </div>
+        <div class="subtitle">Light Cardio:</div>
+        <div class="form-group" aria-label="Light Cardio:">
+            <input type="text" id="light_cardio" name="light_cardio" required maxlength="4">
+        </div>
+        <div class="subtitle">Moderate Cardio:</div>
+        <div class="form-group" aria-label="Moderate Cardio:">
+            <input type="text" id="moderate_cardio" name="moderate_cardio" required maxlength="4">
+        </div>
+
         <div class="btn-group">
             <button type="reset" class="btn">Reset</button>
             <button type="button" class="btn" onclick="sendFormData()">Send</button>
@@ -203,4 +231,3 @@
 </script>
 </body>
 </html>
-
