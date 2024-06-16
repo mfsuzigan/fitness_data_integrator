@@ -30,12 +30,6 @@
             text-align: left;
         }
 
-        .subtitle-inline {
-            font-weight: bold;
-            flex: 0 0 auto;
-            margin-right: 15px;
-        }
-
         .form-group {
             margin-bottom: 20px;
             display: flex;
@@ -43,22 +37,22 @@
             justify-content: center;
         }
 
-        .form-group-inline {
+        .inline-form-group {
             display: flex;
             align-items: center;
             margin-bottom: 20px;
+            justify-content:center
         }
 
-         .form-group-inline input {
+        .inline-subtitle {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+         .inline-form-group input {
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
-            flex: 1 1 auto;
-        }
-
-        .form-group-inline input[name="waist"] {
-            width: 2px;
-            padding: 8px;
         }
 
         .form-group {
@@ -75,14 +69,6 @@
 
         .form-group input {
             width: 60px;
-            padding: 8px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-
-        .form-group input[type="date"] {
-            width: 110px;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -148,8 +134,8 @@
 <div class="container">
     <h2>Health Data Form</h2>
     <form id="healthForm">
-        <div class="form-group-inline">
-            <div class="subtitle-inline" aria-label="Date:">Date:</div>
+        <div class="inline-form-group">
+            <div class="inline-subtitle" aria-label="Date:">Date:</div>
             <input type="date" id="date" name="date" required value="">
         </div>
         <div class="subtitle">Weight:</div>
@@ -182,8 +168,8 @@
             <input type="text" id="vfat_perc2" name="vfat_perc2" required maxlength="4">
             <input type="text" id="vfat_perc3" name="vfat_perc3" required maxlength="4">
         </div>
-        <div class="form-group-inline" aria-label="Waist:">
-            <div class="subtitle-inline">Waist:</div>
+        <div class="inline-form-group" aria-label="Waist:">
+            <div class="inline-subtitle">Waist:</div>
             <input type="text" id="waist" name="waist" required maxlength="4">
         </div>
         <div class="section-title">Blood Pressure</div>
