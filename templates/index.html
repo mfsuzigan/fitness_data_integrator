@@ -13,7 +13,6 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
         }
 
         .container {
@@ -31,6 +30,37 @@
             text-align: left;
         }
 
+        .subtitle-inline {
+            font-weight: bold;
+            flex: 0 0 auto;
+            margin-right: 15px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-group-inline {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+         .form-group-inline input {
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            flex: 1 1 auto;
+        }
+
+        .form-group-inline input[name="waist"] {
+            width: 2px;
+            padding: 8px;
+        }
+
         .form-group {
             margin-bottom: 20px;
             display: flex;
@@ -45,6 +75,14 @@
 
         .form-group input {
             width: 60px;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+
+        .form-group input[type="date"] {
+            width: 110px;
             padding: 8px;
             border: 1px solid #ccc;
             border-radius: 5px;
@@ -86,21 +124,33 @@
 
         .section-title {
             font-size: 1.2em;
-            margin-top: 20px;
-            margin-bottom: 10px;
+            margin-top: 35px;
+            margin-bottom: 20px;
             text-align: left;
             border-bottom: 2px solid #007bff;
             padding-bottom: 5px;
         }
+
+        .workout-group {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .workout-group input {
+            width: 60px;
+            margin-right: 10px;
+        }
+
     </style>
 </head>
 <body>
 <div class="container">
     <h2>Health Data Form</h2>
     <form id="healthForm">
-        <div class="subtitle">Date:</div>
-        <div class="form-group" aria-label="Date:">
-            <input type="date" id="date" name="date" required>
+        <div class="form-group-inline">
+            <div class="subtitle-inline" aria-label="Date:">Date:</div>
+            <input type="date" id="date" name="date" required value="">
         </div>
         <div class="subtitle">Weight:</div>
         <div class="form-group" aria-label="Weight:">
@@ -132,18 +182,19 @@
             <input type="text" id="vfat_perc2" name="vfat_perc2" required maxlength="4">
             <input type="text" id="vfat_perc3" name="vfat_perc3" required maxlength="4">
         </div>
-        <div class="subtitle">Waist:</div>
-        <div class="form-group" aria-label="Waist:">
+        <div class="form-group-inline" aria-label="Waist:">
+            <div class="subtitle-inline">Waist:</div>
             <input type="text" id="waist" name="waist" required maxlength="4">
         </div>
-        <div class="subtitle">Systolic BP:</div>
-        <div class="form-group" aria-label="Systolic BP:">
+        <div class="section-title">Blood Pressure</div>
+        <div class="subtitle">Systolic:</div>
+        <div class="form-group" aria-label="Systolic">
             <input type="text" id="systolic_bp1" name="systolic_bp1" required maxlength="4">
             <input type="text" id="systolic_bp2" name="systolic_bp2" required maxlength="4">
             <input type="text" id="systolic_bp3" name="systolic_bp3" required maxlength="4">
         </div>
-        <div class="subtitle">Diastolic BP:</div>
-        <div class="form-group" aria-label="Diastolic BP:">
+        <div class="subtitle">Diastolic:</div>
+        <div class="form-group" aria-label="Diastolic">
             <input type="text" id="diastolic_bp1" name="diastolic_bp1" required maxlength="4">
             <input type="text" id="diastolic_bp2" name="diastolic_bp2" required maxlength="4">
             <input type="text" id="diastolic_bp3" name="diastolic_bp3" required maxlength="4">
@@ -155,18 +206,11 @@
             <input type="text" id="heart_rate3" name="heart_rate3" required maxlength="4">
         </div>
 
-        <div class="section-title">Workout Sessions:</div>
-        <div class="subtitle">Strength:</div>
-        <div class="form-group" aria-label="Strength:">
-            <input type="text" id="strength" name="strength" required maxlength="4">
-        </div>
-        <div class="subtitle">Light Cardio:</div>
-        <div class="form-group" aria-label="Light Cardio:">
-            <input type="text" id="light_cardio" name="light_cardio" required maxlength="4">
-        </div>
-        <div class="subtitle">Moderate Cardio:</div>
-        <div class="form-group" aria-label="Moderate Cardio:">
-            <input type="text" id="moderate_cardio" name="moderate_cardio" required maxlength="4">
+        <div class="section-title">Workout Sessions</div>
+        <div class="workout-group">
+            <input type="text" id="strength" name="strength" placeholder="🏋️‍♂️" required maxlength="2">
+            <input type="text" id="light_cardio" name="light_cardio" placeholder="🚶‍♂️️" required maxlength="2">
+            <input type="text" id="moderate_cardio" name="moderate_cardio" placeholder="🚴‍♂️" required maxlength="2">
         </div>
 
         <div class="btn-group">
@@ -179,6 +223,7 @@
 <div class="notification" id="notification">Data Sent Successfully!</div>
 
 <script>
+    document.getElementById("date").value = new Date().toISOString().split('T')[0];
     function sendFormData() {
         var formData = new FormData(document.getElementById("healthForm"));
         var jsonObject = {};
