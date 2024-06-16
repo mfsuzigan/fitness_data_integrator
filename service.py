@@ -13,6 +13,9 @@ formula_by_column_name = {
     "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
     "F": "=C%N%-E%N%",
     "G": "=F%N%/E%N%",
+    "H": "%SINGLE_VALUE%",
+    "I": "%SINGLE_VALUE%",
+    "J": "%SINGLE_VALUE%",
     "K": "=AVERAGE%TUPLE%",
     "L": "=(K%N%-K%PREVIOUS_ROW_NUM%)*100",
     "M": "=(K%N%/K%PREVIOUS_ROW_NUM%)-1",
@@ -36,6 +39,9 @@ formula_by_column_name = {
 
 property_by_column_name = {
     "A": "date",
+    "H": "weightlifting_sessions",
+    "I": "light_cardio_sessions",
+    "J": "moderate_cardio_sessions",
     "K": "weight",
     "O": "fat_perc",
     "P": "musc_perc",
@@ -72,7 +78,6 @@ def save_to_file(request):
 
 def save_to_spreadsheet(input_data):
     worksheet = get_worksheet()
-    # save_row_format_to_disk(worksheet)
 
     last_row_number = len(worksheet.col_values(1))
     new_row_number = last_row_number + 1
