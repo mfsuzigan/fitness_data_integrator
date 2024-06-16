@@ -194,9 +194,9 @@
 
         <div class="section-title">Workout Sessions</div>
         <div class="workout-group">
-            <input type="text" id="strength" name="strength" placeholder="🏋️‍♂️" required maxlength="2">
-            <input type="text" id="light_cardio" name="light_cardio" placeholder="🚶‍♂️️" required maxlength="2">
-            <input type="text" id="moderate_cardio" name="moderate_cardio" placeholder="🚴‍♂️" required maxlength="2">
+            <input type="text" id="weightlifting_sessions" name="weightlifting_sessions" placeholder="🏋️‍♂️" required maxlength="2">
+            <input type="text" id="light_cardio_sessions" name="light_cardio_sessions" placeholder="🚶‍♂️️" required maxlength="2">
+            <input type="text" id="moderate_cardio_sessions" name="moderate_cardio_sessions" placeholder="🚴‍♂️" required maxlength="2">
         </div>
 
         <div class="btn-group">
@@ -210,23 +210,29 @@
 
 <script>
     document.getElementById("date").value = new Date().toISOString().split('T')[0];
+
     function sendFormData() {
         var formData = new FormData(document.getElementById("healthForm"));
         var jsonObject = {};
         jsonObject["created_at"] = getTimestamp();
-        jsonObject["date"] = getFormattedDate();
-        jsonObject["waist"] = formData.get("waist")
+        jsonObject["date"] = document.getElementById("date").value;
 
-        fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "systolic_bp", "diastolic_bp", "heart_rate"];
+        single_fields = ["waist", "weightlifting_sessions", "moderate_cardio_sessions", "light_cardio_sessions"]
 
-        for (field of fields){
+        for (field of single_fields){
+            jsonObject[field] = formData.get(field);
+        }
+
+        list_fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "systolic_bp", "diastolic_bp", "heart_rate"];
+
+        for (field of list_fields){
             data = [];
 
             for (let i = 1; i <= 3; i++) {
                 data.push(parseFloat(formData.get(field + i)));
             }
 
-            jsonObject[field] = data
+            jsonObject[field] = data;
         }
 
         var xhr = new XMLHttpRequest();
