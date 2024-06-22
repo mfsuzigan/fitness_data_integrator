@@ -6,8 +6,8 @@ import pickle
 from gspread.utils import ValueInputOption
 
 # *** TEST SHEET *** #
-# SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
-SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
+SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
+#SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
 
 COLUMN_COUNT = 33
 
@@ -124,11 +124,12 @@ def build_new_row(input_data, last_row_number, column_count):
 
             if column_name in property_by_column_name:
                 _property_name = property_by_column_name[column_name]
+                cell_value = ''
 
                 if formula_by_column_name[column_name] == "%SINGLE_VALUE%":
                     cell_value = cell_value.replace("%SINGLE_VALUE%", input_data[_property_name])
 
-                else:
+                elif len(input_data[_property_name]) != 0:
                     _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
                     cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
         else:
