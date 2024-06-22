@@ -29,7 +29,7 @@ values_by_column_name = {
     "Q": "=AVERAGE%TUPLE%",
     "R": "=AVERAGE%TUPLE%",
     "S": "%SINGLE_VALUE%",
-    "T": "=K128-(K%N%*O%N%/100)",
+    "T": "=K%N%-(K%N%*O%N%/100)",
     "U": "=(T%N%/T%PREVIOUS_ROW_NUM%)-1",
     "V": "=K%N%-T%N%",
     "W": "=(V%N%/V%PREVIOUS_ROW_NUM%)-1",
