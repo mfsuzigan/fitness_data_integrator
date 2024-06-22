@@ -6,12 +6,13 @@ import pickle
 from gspread.utils import ValueInputOption
 
 # *** TEST SHEET *** #
-SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
-#SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
+# SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
+
+SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
 
 COLUMN_COUNT = 33
 
-formula_by_column_name = {
+values_by_column_name = {
     "A": "%SINGLE_VALUE%",
     "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
     "F": "=C%N%-E%N%",
@@ -110,32 +111,37 @@ def load_cell_format_from_disk(name):
         return pickle.load(file)
 
 
+def translate_cell_placeholders(row_number, column_name, input_data):
+    cell_value = (values_by_column_name[column_name]
+                  .replace("%PREVIOUS_ROW_NUM%", f"{row_number - 1}")
+                  .replace("%N%", f"{row_number}"))
+
+    if column_name in property_by_column_name:
+        _property_name = property_by_column_name[column_name]
+
+        if values_by_column_name[column_name] == "%SINGLE_VALUE%":
+            cell_value = cell_value.replace("%SINGLE_VALUE%", input_data[_property_name])
+
+        elif len(input_data[_property_name]) != 0:
+            _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
+            cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
+
+        else:
+            cell_value = ""
+
+    return cell_value.replace(".", ",")
+
+
 def build_new_row(input_data, last_row_number, column_count):
-    new_row_number = last_row_number + 1
     new_row_values = []
 
     for column_index in range(1, column_count):
         column_name = get_column_name_by_index(column_index)
+        cell_value = ""
 
-        if column_name in formula_by_column_name:
-            cell_value = (formula_by_column_name[column_name]
-                          .replace("%PREVIOUS_ROW_NUM%", f"{last_row_number}")
-                          .replace("%N%", f"{new_row_number}"))
+        if column_name in values_by_column_name:
+            cell_value = translate_cell_placeholders(last_row_number + 1, column_name, input_data)
 
-            if column_name in property_by_column_name:
-                _property_name = property_by_column_name[column_name]
-                cell_value = ''
-
-                if formula_by_column_name[column_name] == "%SINGLE_VALUE%":
-                    cell_value = cell_value.replace("%SINGLE_VALUE%", input_data[_property_name])
-
-                elif len(input_data[_property_name]) != 0:
-                    _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
-                    cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
-        else:
-            cell_value = ""
-
-        cell_value = cell_value.replace(".", ",")
         new_row_values.append(cell_value)
 
     return new_row_values
