@@ -6,15 +6,18 @@ import pickle
 from gspread.utils import ValueInputOption
 
 # *** TEST SHEET *** #
-# SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
-
-SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
+SPREADSHEET_ID = "1mukK9oAWguKaMmlnI_lzaqBBxs1Z2UbCCCr9vCwFldY"
+# SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
+EXTERNAL_DIET_SPREADSHEET_ID = "1ndbe8htAmaeaCDTE5val3WoaFfSJUVwxNaOWQcdt5Vw"
 
 COLUMN_COUNT = 33
 
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
     "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
+    "C": "%EXTERNAL_SHEET_VALUE%",
+    "D": "%EXTERNAL_SHEET_VALUE%",
+    "E": "%EXTERNAL_SHEET_VALUE%",
     "F": "=C%N%-E%N%",
     "G": "=F%N%/E%N%",
     "H": "%SINGLE_VALUE%",
@@ -39,6 +42,29 @@ values_by_column_name = {
     "AA": "=AVERAGE%TUPLE%",
     "AB": "=AVERAGE%TUPLE%",
     "AC": "=AVERAGE%TUPLE%",
+}
+
+external_property_by_column_name = {
+    "C": {
+        "name": "daily_caloric_intake",
+        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
+        "worksheet": "Zero+",
+        "cell_id": "AG8"
+    },
+
+    "D": {
+        "name": "activity_factor",
+        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
+        "worksheet": "TMB",
+        "cell_id": "C6"
+    },
+
+    "E": {
+        "name": "daily_caloric_expenditure",
+        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
+        "worksheet": "TMB",
+        "cell_id": "C7"
+    }
 }
 
 property_by_column_name = {
