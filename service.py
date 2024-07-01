@@ -101,6 +101,9 @@ cell_formats_by_range = {
 }
 
 
+def get_external_properties():
+    pass
+
 def save_to_file(request):
     with open("requests.log", "a") as file_log:
         file_log.writelines(f"\n{request}")
