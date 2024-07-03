@@ -44,26 +44,27 @@ values_by_column_name = {
     "AC": "=AVERAGE%TUPLE%",
 }
 
-external_property_by_column_name = {
+external_diet_property_by_column_name = {
     "C": {
         "name": "daily_caloric_intake",
-        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
         "worksheet": "Zero+",
-        "cell_id": "AG8"
+        "cell_id": "AG8",
+        "main_spreadsheet_column": "C",
+        "value": None
     },
-
     "D": {
         "name": "activity_factor",
-        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
         "worksheet": "TMB",
-        "cell_id": "C6"
+        "cell_id": "C6",
+        "main_spreadsheet_column": "D",
+        "value": None
     },
-
     "E": {
         "name": "daily_caloric_expenditure",
-        "sheet_id": EXTERNAL_DIET_SPREADSHEET_ID,
         "worksheet": "TMB",
-        "cell_id": "C7"
+        "cell_id": "C7",
+        "main_spreadsheet_column": "E",
+        "value": None
     }
 }
 
@@ -101,8 +102,13 @@ cell_formats_by_range = {
 }
 
 
-def get_external_properties():
-    pass
+def get_external_diet_properties():
+    diet_spreadsheet = get_spreadsheet(EXTERNAL_DIET_SPREADSHEET_ID)
+
+    for diet_property in external_diet_property_by_column_name.values():
+        value = diet_spreadsheet.worksheet(diet_property["worksheet"]).get(diet_property["cell_id"])
+        diet_property["value"] = value
+
 
 def save_to_file(request):
     with open("requests.log", "a") as file_log:
@@ -110,7 +116,8 @@ def save_to_file(request):
 
 
 def save_to_spreadsheet(input_data):
-    worksheet = get_worksheet()
+    worksheet = get_spreadsheet(SPREADSHEET_ID).sheet1
+    get_external_diet_properties()
 
     last_row_number = len(worksheet.col_values(1))
     new_row_number = last_row_number + 1
@@ -155,8 +162,11 @@ def translate_cell_placeholders(row_number, column_name, input_data):
             _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
             cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
 
-        else:
-            cell_value = ""
+    elif column_name in external_diet_property_by_column_name:
+        cell_value = cell_value.replace("%EXTERNAL_VALUE%", external_diet_property_by_column_name[column_name])
+
+    else:
+        cell_value = ""
 
     return cell_value.replace(".", ",")
 
@@ -194,6 +204,6 @@ def get_column_name_by_index(index):
     return column_name
 
 
-def get_worksheet():
+def get_spreadsheet(id):
     gc = gspread.service_account(filename="resources/creds.json")
-    return gc.open_by_key(SPREADSHEET_ID).sheet1
+    return gc.open_by_key(id)
