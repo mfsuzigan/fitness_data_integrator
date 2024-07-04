@@ -15,9 +15,9 @@ COLUMN_COUNT = 33
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
     "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
-    "C": "%EXTERNAL_SHEET_VALUE%",
-    "D": "%EXTERNAL_SHEET_VALUE%",
-    "E": "%EXTERNAL_SHEET_VALUE%",
+    "C": "%EXTERNAL_VALUE%",
+    "D": "%EXTERNAL_VALUE%",
+    "E": "%EXTERNAL_VALUE%",
     "F": "=C%N%-E%N%",
     "G": "=F%N%/E%N%",
     "H": "%SINGLE_VALUE%",
@@ -106,7 +106,7 @@ def get_external_diet_properties():
     diet_spreadsheet = get_spreadsheet(EXTERNAL_DIET_SPREADSHEET_ID)
 
     for diet_property in external_diet_property_by_column_name.values():
-        value = diet_spreadsheet.worksheet(diet_property["worksheet"]).get(diet_property["cell_id"])
+        value = diet_spreadsheet.worksheet(diet_property["worksheet"]).acell(diet_property["cell_id"]).value
         diet_property["value"] = value
 
 
@@ -162,8 +162,12 @@ def translate_cell_placeholders(row_number, column_name, input_data):
             _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
             cell_value = cell_value.replace("%TUPLE%", f"{_tuple}")
 
+        else:
+            cell_value = ""
+
     elif column_name in external_diet_property_by_column_name:
-        cell_value = cell_value.replace("%EXTERNAL_VALUE%", external_diet_property_by_column_name[column_name])
+        cell_value = cell_value.replace("%EXTERNAL_VALUE%",
+                                        external_diet_property_by_column_name[column_name]["value"])
 
     else:
         cell_value = ""
@@ -204,6 +208,6 @@ def get_column_name_by_index(index):
     return column_name
 
 
-def get_spreadsheet(id):
+def get_spreadsheet(spreadsheet_id):
     gc = gspread.service_account(filename="resources/creds.json")
-    return gc.open_by_key(id)
+    return gc.open_by_key(spreadsheet_id)
