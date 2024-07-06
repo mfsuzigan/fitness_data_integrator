@@ -169,9 +169,6 @@ def translate_cell_placeholders(row_number, column_name, input_data):
         cell_value = cell_value.replace("%EXTERNAL_VALUE%",
                                         external_diet_property_by_column_name[column_name]["value"])
 
-    else:
-        cell_value = ""
-
     return cell_value.replace(".", ",")
 
 
