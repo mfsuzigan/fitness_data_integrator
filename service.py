@@ -132,7 +132,7 @@ def save_to_spreadsheet(input_data):
 def save_row_format_to_disk(worksheet):
     for _range in cell_formats_by_range:
         if not os.path.exists(f"cell_formats/{cell_formats_by_range[_range]}"):
-            cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{_range.split(':')[0]}127")
+            cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{_range.split(':')[0]}130")
             save_cell_format_to_disk(cell_format, cell_formats_by_range[_range])
 
 
