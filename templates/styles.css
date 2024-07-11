@@ -1,0 +1,122 @@
+body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f7f7f7;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .container {
+        max-width: 600px;
+        padding: 20px;
+        border-radius: 10px;
+        background-color: #fff;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        text-align: center;
+    }
+
+    .subtitle {
+        font-weight: bold;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .inline-form-group {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        justify-content:center
+    }
+
+    .inline-subtitle {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+     .inline-form-group input {
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    .form-group {
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .form-group label {
+        font-weight: bold;
+        margin-right: 10px;
+    }
+
+    .form-group input {
+        width: 60px;
+        padding: 8px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .btn-group {
+        text-align: center;
+    }
+
+    .btn {
+        padding: 10px 20px;
+        margin: 0 10px;
+        border: none;
+        border-radius: 5px;
+        background-color: #007bff;
+        color: #fff;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    .notification {
+        position: fixed;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: #4caf50;
+        color: #fff;
+        padding: 15px 30px;
+        border-radius: 5px;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        display: none;
+    }
+
+    .section-title {
+        font-size: 1.2em;
+        margin-top: 35px;
+        margin-bottom: 20px;
+        text-align: left;
+        border-bottom: 2px solid #007bff;
+        padding-bottom: 5px;
+    }
+
+    .workout-group {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .workout-group input {
+        width: 60px;
+        margin-right: 10px;
+    }
