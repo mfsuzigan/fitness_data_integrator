@@ -110,6 +110,13 @@ body {
         padding-bottom: 5px;
     }
 
+    textarea {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        width: 100%
+    }
+
     .workout-group {
         display: flex;
         justify-content: space-between;
@@ -119,4 +126,7 @@ body {
     .workout-group input {
         width: 60px;
         margin-right: 10px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 8px;
     }
