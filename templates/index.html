@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <title>Health Data Form</title>
     <style>
     </style>
@@ -72,9 +72,12 @@
 
         <div class="section-title">Workout Sessions</div>
         <div class="workout-group">
-            <input type="text" id="weightlifting_sessions" name="weightlifting_sessions" placeholder="🏋️‍♂️" required maxlength="2">
-            <input type="text" id="light_cardio_sessions" name="light_cardio_sessions" placeholder="🚶‍♂️️" required maxlength="2">
-            <input type="text" id="moderate_cardio_sessions" name="moderate_cardio_sessions" placeholder="🚴‍♂️" required maxlength="2">
+            <input type="text" id="weightlifting_sessions" name="weightlifting_sessions" placeholder="🏋️‍♂️" required
+                   maxlength="2">
+            <input type="text" id="light_cardio_sessions" name="light_cardio_sessions" placeholder="🚶‍♂️️" required
+                   maxlength="2">
+            <input type="text" id="moderate_cardio_sessions" name="moderate_cardio_sessions" placeholder="🚴‍♂️" required
+                   maxlength="2">
         </div>
 
         <div class="section-title"><label for="comment">Comment</label></div>
@@ -98,13 +101,15 @@
         jsonObject["created_at"] = getTimestamp();
         jsonObject["date"] = document.getElementById("date").value;
 
-        single_fields = ["waist", "weightlifting_sessions", "moderate_cardio_sessions", "light_cardio_sessions"]
+        single_fields = ["waist", "weightlifting_sessions", "moderate_cardio_sessions",
+            "light_cardio_sessions", "comment"]
 
         for (field of single_fields){
             jsonObject[field] = formData.get(field);
         }
 
-        list_fields = ["weight", "fat_perc", "musc_perc", "body_age", "vfat_perc", "systolic_bp", "diastolic_bp", "heart_rate"];
+        list_fields = ["weight", "fat_perc", "musc_perc", "body_age",
+            "vfat_perc", "systolic_bp", "diastolic_bp", "heart_rate"];
 
         for (field of list_fields){
             data = [];

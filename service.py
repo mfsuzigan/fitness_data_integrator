@@ -10,7 +10,7 @@ from gspread.utils import ValueInputOption
 SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
 EXTERNAL_DIET_SPREADSHEET_ID = "1ndbe8htAmaeaCDTE5val3WoaFfSJUVwxNaOWQcdt5Vw"
 
-COLUMN_COUNT = 33
+COLUMN_COUNT = 38
 
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
@@ -42,6 +42,7 @@ values_by_column_name = {
     "AA": "=AVERAGE%TUPLE%",
     "AB": "=AVERAGE%TUPLE%",
     "AC": "=AVERAGE%TUPLE%",
+    "AK": "%SINGLE_VALUE%",
 }
 
 external_diet_property_by_column_name = {
@@ -81,7 +82,8 @@ property_by_column_name = {
     "S": "waist",
     "AA": "systolic_bp",
     "AB": "diastolic_bp",
-    "AC": "heart_rate"
+    "AC": "heart_rate",
+    "AK": "comment"
 }
 
 cell_formats_by_range = {
@@ -169,6 +171,7 @@ def translate_cell_placeholders(row_number, column_name, input_data):
         cell_value = cell_value.replace("%EXTERNAL_VALUE%",
                                         external_diet_property_by_column_name[column_name]["value"])
 
+    # TODO: do not do this for text properties
     return cell_value.replace(".", ",")
 
 
