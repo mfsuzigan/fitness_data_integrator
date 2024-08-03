@@ -1,0 +1,4 @@
+requests~=2.31.0
+flask~=3.0.3
+gspread~=6.1.2
+gspread_formatting
