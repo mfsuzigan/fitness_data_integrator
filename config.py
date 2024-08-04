@@ -1,0 +1,2 @@
+class Config:
+    SPREADSHEET_ID = "11B3T774ewREnj1m0D2srt4nFv20UNK4gx-x6xWF4jSU"
