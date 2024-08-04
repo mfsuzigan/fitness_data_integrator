@@ -113,8 +113,8 @@ def save_to_file(request):
         file_log.writelines(f"\n{request}")
 
 
-def save_to_spreadsheet(input_data):
-    worksheet = get_spreadsheet(SPREADSHEET_ID).sheet1
+def save_to_spreadsheet(input_data, spreadsheet_id):
+    worksheet = get_spreadsheet(spreadsheet_id).sheet1
     get_external_diet_properties()
 
     last_row_number = len(worksheet.col_values(1))
