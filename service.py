@@ -108,7 +108,7 @@ def get_external_diet_properties():
         diet_property["value"] = value
 
 
-def save_to_file(request):
+def save_to_requests_log(request):
     with open("requests.log", "a") as file_log:
         file_log.writelines(f"\n{request}")
 
