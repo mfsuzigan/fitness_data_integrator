@@ -4,9 +4,11 @@ import gspread
 import gspread_formatting
 import pickle
 from gspread.utils import ValueInputOption
+from gspread.spreadsheet import Spreadsheet
 
 EXTERNAL_DIET_SPREADSHEET_ID = "1ndbe8htAmaeaCDTE5val3WoaFfSJUVwxNaOWQcdt5Vw"
 COLUMN_COUNT = 38
+diet_spreadsheet: Spreadsheet
 
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
@@ -100,9 +102,12 @@ cell_formats_by_range = {
 }
 
 
-def get_external_diet_properties():
+def load_diet_spreadsheet():
+    global diet_spreadsheet
     diet_spreadsheet = get_spreadsheet(EXTERNAL_DIET_SPREADSHEET_ID)
 
+
+def load_diet_properties():
     for diet_property in external_diet_property_by_column_name.values():
         value = diet_spreadsheet.worksheet(diet_property["worksheet"]).acell(diet_property["cell_id"]).value
         diet_property["value"] = value
@@ -113,18 +118,24 @@ def save_to_requests_log(request):
         file_log.writelines(f"\n{request}")
 
 
-def save_to_spreadsheet(input_data, spreadsheet_id):
-    worksheet = get_spreadsheet(spreadsheet_id).sheet1
-    get_external_diet_properties()
+def update_weight_in_diet_spreadsheet(input_data):
+    median_weight = 0
+    pass
 
-    last_row_number = len(worksheet.col_values(1))
+
+def save_to_stats_spreadsheet(input_data, spreadsheet_id):
+    stats_worksheet = get_spreadsheet(spreadsheet_id).sheet1
+    load_diet_spreadsheet()
+    load_diet_properties()
+
+    last_row_number = len(stats_worksheet.col_values(1))
     new_row_number = last_row_number + 1
 
-    apply_row_formatting(worksheet, new_row_number)
+    apply_row_formatting(stats_worksheet, new_row_number)
 
     new_row_values = build_new_row(input_data, last_row_number, COLUMN_COUNT)
-    worksheet.update([new_row_values], f"{new_row_number}:{new_row_number}",
-                     value_input_option=ValueInputOption.user_entered)
+    stats_worksheet.update([new_row_values], f"{new_row_number}:{new_row_number}",
+                           value_input_option=ValueInputOption.user_entered)
 
 
 def save_row_format_to_disk(worksheet):

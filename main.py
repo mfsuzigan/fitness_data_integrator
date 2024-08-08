@@ -1,7 +1,7 @@
 import json
 import os
 from flask import Flask, request, jsonify, render_template
-from service import save_to_spreadsheet, save_to_requests_log
+from service import save_to_stats_spreadsheet, save_to_requests_log
 
 app = Flask(__name__)
 config_type = os.getenv('FLASK_ENV', 'production')
@@ -27,6 +27,6 @@ def save_measurement():
     input_data = request.get_json()
     app.logger.info(input_data)
     save_to_requests_log(json.dumps(input_data))
-    save_to_spreadsheet(input_data, app.config['SPREADSHEET_ID'])
+    save_to_stats_spreadsheet(input_data, app.config['SPREADSHEET_ID'])
 
     return jsonify({'message': 'Measurements received successfully'})
