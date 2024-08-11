@@ -1,4 +1,5 @@
 import os.path
+import statistics
 
 import gspread
 import gspread_formatting
@@ -6,7 +7,6 @@ import pickle
 from gspread.utils import ValueInputOption
 from gspread.spreadsheet import Spreadsheet
 
-EXTERNAL_DIET_SPREADSHEET_ID = "1ndbe8htAmaeaCDTE5val3WoaFfSJUVwxNaOWQcdt5Vw"
 COLUMN_COUNT = 38
 diet_spreadsheet: Spreadsheet
 
@@ -102,9 +102,9 @@ cell_formats_by_range = {
 }
 
 
-def load_diet_spreadsheet():
+def load_diet_spreadsheet(diet_spreadsheet_id):
     global diet_spreadsheet
-    diet_spreadsheet = get_spreadsheet(EXTERNAL_DIET_SPREADSHEET_ID)
+    diet_spreadsheet = get_spreadsheet(diet_spreadsheet_id)
 
 
 def load_diet_properties():
@@ -119,14 +119,12 @@ def save_to_requests_log(request):
 
 
 def update_weight_in_diet_spreadsheet(input_data):
-    median_weight = 0
-    pass
+    mean_weight = statistics.mean(input_data["weight"])
+    diet_spreadsheet.worksheet("TMB").update([[mean_weight]], "C3")
 
 
 def save_to_stats_spreadsheet(input_data, spreadsheet_id):
     stats_worksheet = get_spreadsheet(spreadsheet_id).sheet1
-    load_diet_spreadsheet()
-    load_diet_properties()
 
     last_row_number = len(stats_worksheet.col_values(1))
     new_row_number = last_row_number + 1
