@@ -1,9 +1,12 @@
 import os.path
 import statistics
+from datetime import datetime
 
 import gspread
 import gspread_formatting
 import pickle
+
+import pytz
 from gspread.utils import ValueInputOption
 
 COLUMN_COUNT = 38
@@ -114,10 +117,11 @@ def log_request(request):
 def update_weight_in_diet_spreadsheet(input_data, diet_spreadsheet):
     mean_weight = statistics.mean(input_data["weight"])
     diet_spreadsheet.worksheet("TMB").update([[mean_weight]], "C3")
+    save_timestamp = datetime.now(pytz.timezone("America/Sao_Paulo")).strftime("%d/%m/%Y, %H:%M:%S")
+    diet_spreadsheet.worksheet("TMB").update([[save_timestamp]], "E3")
 
 
 def save_to_stats_spreadsheet(input_data, stats_worksheet):
-
     last_row_number = len(stats_worksheet.col_values(1))
     new_row_number = last_row_number + 1
 
