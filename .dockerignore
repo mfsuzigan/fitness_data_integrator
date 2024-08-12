@@ -2,4 +2,4 @@
 requests.log
 Dockerfile
 *.sh
-**/creds.json
+**/credentials.json.json

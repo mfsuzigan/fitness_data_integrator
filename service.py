@@ -5,10 +5,8 @@ import gspread
 import gspread_formatting
 import pickle
 from gspread.utils import ValueInputOption
-from gspread.spreadsheet import Spreadsheet
 
 COLUMN_COUNT = 38
-diet_spreadsheet: Spreadsheet
 
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
@@ -102,29 +100,23 @@ cell_formats_by_range = {
 }
 
 
-def load_diet_spreadsheet(diet_spreadsheet_id):
-    global diet_spreadsheet
-    diet_spreadsheet = get_spreadsheet(diet_spreadsheet_id)
-
-
-def load_diet_properties():
+def load_diet_properties(diet_spreadsheet):
     for diet_property in external_diet_property_by_column_name.values():
         value = diet_spreadsheet.worksheet(diet_property["worksheet"]).acell(diet_property["cell_id"]).value
         diet_property["value"] = value
 
 
-def save_to_requests_log(request):
+def log_request(request):
     with open("requests.log", "a") as file_log:
         file_log.writelines(f"\n{request}")
 
 
-def update_weight_in_diet_spreadsheet(input_data):
+def update_weight_in_diet_spreadsheet(input_data, diet_spreadsheet):
     mean_weight = statistics.mean(input_data["weight"])
     diet_spreadsheet.worksheet("TMB").update([[mean_weight]], "C3")
 
 
-def save_to_stats_spreadsheet(input_data, spreadsheet_id):
-    stats_worksheet = get_spreadsheet(spreadsheet_id).sheet1
+def save_to_stats_spreadsheet(input_data, stats_worksheet):
 
     last_row_number = len(stats_worksheet.col_values(1))
     new_row_number = last_row_number + 1
@@ -213,6 +205,5 @@ def get_column_name_by_index(index):
     return column_name
 
 
-def get_spreadsheet(spreadsheet_id):
-    gc = gspread.service_account(filename="resources/creds.json")
-    return gc.open_by_key(spreadsheet_id)
+def get_spreadsheet(spreadsheet_id, credentials_file_path):
+    return gspread.service_account(filename=credentials_file_path).open_by_key(spreadsheet_id)
