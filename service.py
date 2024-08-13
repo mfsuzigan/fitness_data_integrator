@@ -150,7 +150,7 @@ def load_cell_format_from_disk(name):
         return pickle.load(file)
 
 
-def translate_cell_placeholders(row_number, column_name, input_data):
+def fill_cell_placeholders(row_number, column_name, input_data):
     cell_value = (values_by_column_name[column_name]
                   .replace("%PREVIOUS_ROW_NUM%", f"{row_number - 1}")
                   .replace("%N%", f"{row_number}"))
@@ -184,7 +184,7 @@ def build_new_row(input_data, last_row_number, column_count):
         cell_value = ""
 
         if column_name in values_by_column_name:
-            cell_value = translate_cell_placeholders(last_row_number + 1, column_name, input_data)
+            cell_value = fill_cell_placeholders(last_row_number + 1, column_name, input_data)
 
         new_row_values.append(cell_value)
 

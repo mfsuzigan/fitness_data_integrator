@@ -7,6 +7,17 @@ from exceptions import MissingEnvironmentVariableError
 
 GOOGLE_API_CREDENTIALS_FILE_PATH = "resources/credentials.json"
 
+flask_configuration_by_environment = {
+    "test": {
+        "object": "config_test.TestConfig",
+        "message": "⚠️  Running TEST environment️"
+    },
+    "production": {
+        "object": "config.Config",
+        "message": None
+    }
+}
+
 
 def main():
     service_account = get_service_account()
@@ -16,14 +27,9 @@ def main():
 
 
 def set_flask_env(app):
-    config_type = os.getenv('FLASK_ENV', default='production')
-
-    if config_type.lower() == 'test':
-        app.config.from_object('config_test.TestConfig')
-        app.logger.warning("⚠️  Running TEST environment️")
-
-    else:
-        app.config.from_object('config.Config')
+    flask_env = os.getenv("FLASK_ENV", default="production").lower()
+    app.config.from_object(flask_configuration_by_environment[flask_env]["object"])
+    app.logger.warning(flask_configuration_by_environment[flask_env]["message"])
 
 
 def get_service_account():
