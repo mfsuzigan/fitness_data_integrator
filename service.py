@@ -5,6 +5,7 @@ from datetime import datetime
 import gspread
 import gspread_formatting
 import pickle
+from re import search
 
 import pytz
 from gspread.utils import ValueInputOption
@@ -172,8 +173,10 @@ def fill_cell_placeholders(row_number, column_name, input_data):
         cell_value = cell_value.replace("%EXTERNAL_VALUE%",
                                         external_diet_property_by_column_name[column_name]["value"])
 
-    # TODO: do not do this for text properties
-    return cell_value.replace(".", ",")
+    if search(r"\d+\\.\d+", cell_value):
+        cell_value = cell_value.replace(".", ",")
+
+    return cell_value
 
 
 def build_new_row(input_data, last_row_number, column_count):
