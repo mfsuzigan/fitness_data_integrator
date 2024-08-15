@@ -173,7 +173,7 @@ def fill_cell_placeholders(row_number, column_name, input_data):
         cell_value = cell_value.replace("%EXTERNAL_VALUE%",
                                         external_diet_property_by_column_name[column_name]["value"])
 
-    if search(r"\d+\\.\d+", cell_value):
+    if search(r"\d+\.\d+", cell_value):
         cell_value = cell_value.replace(".", ",")
 
     return cell_value
