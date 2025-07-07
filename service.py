@@ -104,7 +104,9 @@ cell_formats_by_range = {
 }
 
 
-def load_diet_properties(diet_spreadsheet):
+def load_diet_properties(diet_worksheet_scheme, diet_spreadsheet):
+    external_diet_property_by_column_name["C"]["worksheet"] = diet_worksheet_scheme
+
     for diet_property in external_diet_property_by_column_name.values():
         value = diet_spreadsheet.worksheet(diet_property["worksheet"]).acell(diet_property["cell_id"]).value
         diet_property["value"] = value
