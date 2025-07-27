@@ -7,4 +7,4 @@
 
 docker rm -f fitness_data_integrator 2> /dev/null
 run_environment="${1:-production}"
-docker run -it -e FLASK_ENV=$run_environment -v $GOOGLE_API_CREDENTIALS_FILE_PATH:/app/resources/credentials.json -p 8888:8888 --restart always --name fitness_data_integrator fitness_data_integrator:latest
+docker run -it -e FLASK_ENV=$run_environment -v $GOOGLE_API_CREDENTIALS_FILE_PATH:/app/resources/credentials.json -v /home/michel/workspace/fitness_data_integrator/logs:/app/logs -p 8888:8888 --restart always --name fitness_data_integrator fitness_data_integrator:latest
