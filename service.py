@@ -6,6 +6,7 @@ import gspread
 import gspread_formatting
 import pickle
 from re import search
+from pathlib import Path
 
 import pytz
 from gspread.utils import ValueInputOption
@@ -14,7 +15,7 @@ COLUMN_COUNT = 38
 
 values_by_column_name = {
     "A": "%SINGLE_VALUE%",
-    "B": "=DATEDIF(\"1987-11-17\";A%N%;\"y\")",
+    "B": '=DATEDIF("1987-11-17";A%N%;"y")',
     "C": "%EXTERNAL_VALUE%",
     "D": "%EXTERNAL_VALUE%",
     "E": "%EXTERNAL_VALUE%",
@@ -51,22 +52,22 @@ external_diet_property_by_column_name = {
         "worksheet": "Zero+",
         "cell_id": "AG8",
         "main_spreadsheet_column": "C",
-        "value": None
+        "value": None,
     },
     "D": {
         "name": "activity_factor",
         "worksheet": "TMB",
         "cell_id": "C6",
         "main_spreadsheet_column": "D",
-        "value": None
+        "value": None,
     },
     "E": {
         "name": "daily_caloric_expenditure",
         "worksheet": "TMB",
         "cell_id": "C7",
         "main_spreadsheet_column": "E",
-        "value": None
-    }
+        "value": None,
+    },
 }
 
 property_by_column_name = {
@@ -83,7 +84,7 @@ property_by_column_name = {
     "AA": "systolic_bp",
     "AB": "diastolic_bp",
     "AC": "heart_rate",
-    "AK": "comment"
+    "AK": "comment",
 }
 
 cell_formats_by_range = {
@@ -100,7 +101,7 @@ cell_formats_by_range = {
     "U:U": "signaledpercentage2_normal_white",
     "W:W": "signaledpercentage2_normal_white",
     "Y:Y": "decimal3_normal_white",
-    "Z:Z": "signaleddecimal2_normal_white"
+    "Z:Z": "signaleddecimal2_normal_white",
 }
 
 
@@ -108,19 +109,29 @@ def load_diet_properties(diet_worksheet_scheme, diet_spreadsheet):
     external_diet_property_by_column_name["C"]["worksheet"] = diet_worksheet_scheme
 
     for diet_property in external_diet_property_by_column_name.values():
-        value = diet_spreadsheet.worksheet(diet_property["worksheet"]).acell(diet_property["cell_id"]).value
+        value = (
+            diet_spreadsheet.worksheet(diet_property["worksheet"])
+            .acell(diet_property["cell_id"])
+            .value
+        )
         diet_property["value"] = value
 
 
 def log_request(request):
-    with open("requests.log", "a") as file_log:
-        file_log.writelines(f"\n{request}")
+    os.makedirs("logs", exist_ok=True)
+    try:
+        with open("logs/requests.log", "a") as file_log:
+            file_log.writelines(f"\n{request}")
+    except IOError as e:
+        print("Unexpected error logging request", e)
 
 
 def update_weight_in_diet_spreadsheet(input_data, diet_spreadsheet):
     mean_weight = statistics.mean(input_data["weight"])
     diet_spreadsheet.worksheet("TMB").update([[mean_weight]], "C3")
-    save_timestamp = datetime.now(pytz.timezone("America/Sao_Paulo")).strftime("%d/%m/%Y, %H:%M:%S")
+    save_timestamp = datetime.now(pytz.timezone("America/Sao_Paulo")).strftime(
+        "%d/%m/%Y, %H:%M:%S"
+    )
     diet_spreadsheet.worksheet("TMB").update([[save_timestamp]], "E3")
 
 
@@ -131,14 +142,19 @@ def save_to_stats_spreadsheet(input_data, stats_worksheet):
     apply_row_formatting(stats_worksheet, new_row_number)
 
     new_row_values = build_new_row(input_data, last_row_number, COLUMN_COUNT)
-    stats_worksheet.update([new_row_values], f"{new_row_number}:{new_row_number}",
-                           value_input_option=ValueInputOption.user_entered)
+    stats_worksheet.update(
+        [new_row_values],
+        f"{new_row_number}:{new_row_number}",
+        value_input_option=ValueInputOption.user_entered,
+    )
 
 
 def save_row_format_to_disk(worksheet):
     for _range in cell_formats_by_range:
         if not os.path.exists(f"cell_formats/{cell_formats_by_range[_range]}"):
-            cell_format = gspread_formatting.get_user_entered_format(worksheet, f"{_range.split(':')[0]}130")
+            cell_format = gspread_formatting.get_user_entered_format(
+                worksheet, f"{_range.split(':')[0]}130"
+            )
             save_cell_format_to_disk(cell_format, cell_formats_by_range[_range])
 
 
@@ -154,15 +170,19 @@ def load_cell_format_from_disk(name):
 
 
 def fill_cell_placeholders(row_number, column_name, input_data):
-    cell_value = (values_by_column_name[column_name]
-                  .replace("%PREVIOUS_ROW_NUM%", f"{row_number - 1}")
-                  .replace("%N%", f"{row_number}"))
+    cell_value = (
+        values_by_column_name[column_name]
+        .replace("%PREVIOUS_ROW_NUM%", f"{row_number - 1}")
+        .replace("%N%", f"{row_number}")
+    )
 
     if column_name in property_by_column_name:
         _property_name = property_by_column_name[column_name]
 
         if values_by_column_name[column_name] == "%SINGLE_VALUE%":
-            cell_value = cell_value.replace("%SINGLE_VALUE%", input_data[_property_name])
+            cell_value = cell_value.replace(
+                "%SINGLE_VALUE%", input_data[_property_name]
+            )
 
         elif len(input_data[_property_name]) != 0:
             _tuple = str(tuple(input_data[_property_name])).replace(",", ";")
@@ -172,8 +192,10 @@ def fill_cell_placeholders(row_number, column_name, input_data):
             cell_value = ""
 
     elif column_name in external_diet_property_by_column_name:
-        cell_value = cell_value.replace("%EXTERNAL_VALUE%",
-                                        external_diet_property_by_column_name[column_name]["value"])
+        cell_value = cell_value.replace(
+            "%EXTERNAL_VALUE%",
+            external_diet_property_by_column_name[column_name]["value"],
+        )
 
     if search(r"\d+\.\d+", cell_value):
         cell_value = cell_value.replace(".", ",")
@@ -189,7 +211,9 @@ def build_new_row(input_data, last_row_number, column_count):
         cell_value = ""
 
         if column_name in values_by_column_name:
-            cell_value = fill_cell_placeholders(last_row_number + 1, column_name, input_data)
+            cell_value = fill_cell_placeholders(
+                last_row_number + 1, column_name, input_data
+            )
 
         new_row_values.append(cell_value)
 
@@ -198,10 +222,16 @@ def build_new_row(input_data, last_row_number, column_count):
 
 def apply_row_formatting(worksheet, new_row_number):
     for original_range in cell_formats_by_range:
-        applicable_cell_format = load_cell_format_from_disk(cell_formats_by_range[original_range])
+        applicable_cell_format = load_cell_format_from_disk(
+            cell_formats_by_range[original_range]
+        )
         range_parts = original_range.split(":")
-        applied_range = f"{range_parts[0]}{new_row_number}:{range_parts[1]}{new_row_number}"
-        gspread_formatting.format_cell_range(worksheet, applied_range, applicable_cell_format)
+        applied_range = (
+            f"{range_parts[0]}{new_row_number}:{range_parts[1]}{new_row_number}"
+        )
+        gspread_formatting.format_cell_range(
+            worksheet, applied_range, applicable_cell_format
+        )
 
 
 def get_column_name_by_index(index):
@@ -215,4 +245,6 @@ def get_column_name_by_index(index):
 
 
 def get_spreadsheet(spreadsheet_id, credentials_file_path):
-    return gspread.service_account(filename=credentials_file_path).open_by_key(spreadsheet_id)
+    return gspread.service_account(filename=credentials_file_path).open_by_key(
+        spreadsheet_id
+    )
