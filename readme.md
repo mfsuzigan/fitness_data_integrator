@@ -14,6 +14,4 @@ A planilha (Google Sheets) já era usada há muito tempo, mas o trabalho tedioso
 
 Ao invés de anotá-las em rascunhos intermediários, agora é possível inseri-las diretamente no web app via browser, clicar em Send e salvá-las já formatadas na nuvem do Google, atualizando estatísticas e gráficos automaticamente.
 
-<div style="text-align: center;">
-  <img src="static/media/overview_diagram.png" alt="Visão geral da solução">
-</div>
+ <p align="center"><img src="static/media/overview_diagram.png" alt="Visão geral da solução"></p>
